@@ -12,6 +12,7 @@
 - step one
 
 $export AWS_ACCESS_KEY_ID=XXXXXXXXXXXX
+
 $export AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXX
 
 - step two
