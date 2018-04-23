@@ -1,0 +1,7 @@
+---
+# tasks file for create_keypair
+- name: ec2 keypair
+  ec2_key: name="{{ aws_keypair_name }}" key_material="{{ item }}" region="{{ aws_region }}"
+  with_file: "{{ aws_local_pub_key }}"
+
+  

@@ -1,0 +1,43 @@
+---
+# tasks file for create_security_group
+- name: create security group for web service
+  ec2_group:
+    name: "{{ aws_security_groups_type }}"
+    description: web type security group
+    region: "{{ aws_region }}"
+    rules:
+      - proto: tcp
+        ports: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        ports:
+          - 80
+          - 443
+          - 8080
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: tcp
+        ports:
+          - 0-65535
+        cidr_ip: 0.0.0.0/0
+  when: aws_security_groups_type == "web"
+
+- name: create security group for mysql service
+  ec2_group:
+    name: "{{ aws_security_groups_type }}"
+    description: mysql type security group
+    region: "{{ aws_region }}"
+    rules:
+      - proto: tcp
+        ports: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        ports:
+          - 3306
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        ports:
+          - 0-65535
+        cidr_ip: 0.0.0.0/0
+  when: aws_security_groups_type == "mysql"

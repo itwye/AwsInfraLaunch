@@ -1,0 +1,26 @@
+---
+# aws services deploy
+
+- name: aws services deploy stage one
+  hosts: local
+  connection: local
+  gather_facts: False
+  vars_files:
+    - vars.yml
+  roles:
+    - create_keypair
+    - create_security_groups
+    - create_elbs
+    - create_instances
+        
+- name: aws services deploy stage two
+  hosts: cache_group
+  user: "{{ aws_ec2_instance_user }}"
+  gather_facts: False
+  vars_files:
+    - vars.yml
+  roles:
+    - { role: init_web_instances , when aws_host_role == "web" }
+    - add_ec2_to_elb
+
+

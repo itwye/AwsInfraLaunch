@@ -1,0 +1,30 @@
+---
+# tasks file for create_instances
+- name: launch ec2 instances
+  ec2:
+    region: "{{ aws_region }}"
+    zone: "{{ item }}"
+    image: "{{ aws_ec2_instance_image }}"
+    instance_type: "{{ aws_ec2_instance_type }}"
+    key_name: "{{ aws_keypair_name }}"
+    group: ["{{ aws_security_groups_type }}"]
+    instance_tags: "{{ aws_ec2_instance_tags }}"
+    exact_count: "{{ aws_ec2_exact_count }}"
+    count_tag: "{{ aws_ec2_count_tag }}"
+    monitoring: yes
+    wait: yes
+    wait_timeout: 330
+  with_items: "{{ aws_ec2_availability_zone }}"
+  register: ec2
+
+- name: add the instances to "{{ aws_host_role }}" group
+  add_host: hostname="{{ item.tagged_instances.0.public_dns_name }}" groups=cache_group
+  when: item.tagged_instances.0.public_dns_name is defined
+  with_items: "{{ ec2.results }}"
+
+- name: wait for ssh server to be running
+  wait_for: host="{{ item.tagged_instances.0.public_dns_name }}" port=22 search_regex=OpenSSH
+  when: item.tagged_instances.0.public_dns_name is defined
+  with_items: "{{ ec2.results }}"
+
+

@@ -1,0 +1,32 @@
+---
+
+# aws service deploy variables
+aws_project_name: "myapp"
+aws_host_role: "web"
+aws_host_env: "production"
+
+aws_region: "us-east-1"
+
+# aws key pair
+aws_keypair_name: "awskey"
+aws_local_pub_key: "~/.ssh/id_rsa.pub"
+
+# aws security group
+aws_security_groups_type: "{{ aws_host_role }}"
+
+# aws ec2 instance
+aws_ec2_instance_user: "ec2-user"
+aws_ec2_user_home_dir: "/home/{{ aws_ec2_instance_user }}"
+aws_ec2_instance_image: "ami-1853ac65"
+aws_ec2_instance_type: "t2.medium"
+aws_ec2_instance_tags: {role: "{{ aws_host_role }}",env: "{{ aws_host_env }}",Name: "{{ aws_project_name }}-{{ aws_host_role }}-{{ aws_host_env }}"}
+aws_ec2_count_tag: {role: "{{ aws_host_role }}" , env: "{{ aws_host_env }}"}
+aws_ec2_exact_count: 1
+aws_ec2_availability_zone: ["us-east-1a","us-east-1b"]
+
+# aws elastic load balancer
+aws_elb_name: "{{ aws_project_name }}-elb"
+
+
+
+

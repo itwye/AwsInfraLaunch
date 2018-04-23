@@ -1,0 +1,21 @@
+---
+# tasks file for create_elbs
+# Configure a health check and the access logs
+- name: create elastic load balancer
+  ec2_elb_lb:
+    state: present
+    name: "{{ aws_elb_name }}"
+    zones: "{{ aws_ec2_availability_zone }}"
+    region: "{{ aws_region }}"
+    listeners:
+      - protocol: http
+        load_balancer_port: 80
+        instance_port: 8080
+    health_check:
+        ping_protocol: http # options are http, https, ssl, tcp
+        ping_port: 8080
+        ping_path: "/index.jsp" # not required for tcp or ssl
+        response_timeout: 5 # seconds
+        interval: 30 # seconds
+        unhealthy_threshold: 6
+        healthy_threshold: 6
